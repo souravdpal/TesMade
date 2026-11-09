@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
+import { off } from "process";
 
 const nextConfig: NextConfig = {
+  devIndicators:false,
+  serverExternalPackages: ["argon2"],
   /* config options here */
   experimental: {
     agentFeedback: true,
@@ -15,6 +18,28 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  async redirects() {
+    return [
+      {
+        source : "/signup",
+        destination :"/outh/u/signup",
+        permanent : false
+       
+      },
+      {
+        source : "/login",
+        destination :"/outh/u/login",
+        permanent : false
+       
+      },
+      {
+        source : "/home",
+        destination :"/",
+        permanent : false
+       
+      }
+    ]
+  }
 };
 
 export default nextConfig;
