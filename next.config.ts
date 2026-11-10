@@ -33,8 +33,8 @@ const nextConfig: NextConfig = {
        
       },
       {
-        source : "/home",
-        destination :"/",
+        source : "/",
+        destination :"/home",
         permanent : false
        
       }
