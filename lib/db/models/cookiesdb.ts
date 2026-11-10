@@ -1,32 +1,37 @@
-import mongoose, { Schema } from "mongoose"
+import mongoose, { Schema } from "mongoose";
 
-const cookieSchema = new Schema ({
-    refid : {
-        type : String,
-        required : true,
-    },
-    userid : {
-        type:Schema.Types.ObjectId,
-        ref : "User",
-        required :  true,
-    },
-    sessionid : {
-        type : String,
-        required : false,
-    },
-    sessionexp : {
-        type : Number,
-        required : false,
-    },
-    refexp : {
-        type : Number,
-        required : true,
-    },
-    ip : {
-        type : String,
-        required: true,
-    }
+const cookieSchema = new Schema({
+  refid: {
+    type: String,
+    required: true,
+  },
+  userid: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  sessionid: {
+    type: String,
+    required: false,
+  },
+  sessionexp: {
+    type: Number,
+    required: false,
+  },
+  refexp: {
+    type: Number,
+    required: true,
+  },
+  ip: {
+    type: String,
+    required: true,
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+    expires: 2937600,
+  },
+});
 
-})
-
-export default mongoose.models.Cookiesdb || mongoose.model("Cookiesdb", cookieSchema);
+export default mongoose.models.Cookiesdb ||
+  mongoose.model("Cookiesdb", cookieSchema);
