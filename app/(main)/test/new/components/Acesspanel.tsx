@@ -1,6 +1,6 @@
 "use client";
 import { useState, type ClipboardEvent, type KeyboardEvent } from "react";
-import { MAX_USERNAMES, parseUsernames, type Access } from "./Schema";
+import { MAX_USERNAMES, parseUsernames, type Access } from "@/interface/test_interface";
 import { s } from "./Ui";
 
 interface AccessPanelProps {

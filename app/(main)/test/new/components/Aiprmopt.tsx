@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { AiField, s } from "./Ui";
-import { cleanText } from "./Schema";
+import { cleanText } from "@/interface/test_interface";
 
 export interface AiPromptSubmit {
   prompt: string;

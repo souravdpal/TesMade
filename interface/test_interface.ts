@@ -51,6 +51,8 @@ export interface TestData {
   title: string;
   description: string;
   durationMinutes: number | null;
+  /** ISO 8601 UTC string, or null = never expires. */
+  expiresAt: string | null;
   imageSubmission: { enabled: boolean };
   access: Access;
   questions: Question[];
@@ -103,6 +105,20 @@ export function safeParse(text: string): unknown {
 
 const toBool = (v: unknown): boolean | null =>
   typeof v === "boolean" ? v : v === "true" ? true : v === "false" ? false : null;
+
+// ---- Expiry ----
+/**
+ * Accepts a local "YYYY-MM-DDTHH:mm" string (from <input type="datetime-local">) or any ISO string.
+ * Returns an ISO UTC string, or null when empty. Must be in the future.
+ */
+export function normalizeExpiry(v: unknown): { value: string | null; error?: string } {
+  if (v === undefined || v === null || v === "") return { value: null };
+  if (typeof v !== "string" && typeof v !== "number") return { value: null, error: "expiresAt must be a date string" };
+  const d = new Date(v);
+  if (Number.isNaN(d.getTime())) return { value: null, error: "expiresAt is not a valid date" };
+  if (d.getTime() <= Date.now()) return { value: null, error: "Expiry must be in the future" };
+  return { value: d.toISOString() };
+}
 
 // ---- Student access (usernames) ----
 // Adjust this pattern to match your real username rules.
@@ -209,6 +225,8 @@ export function validateTest(raw: unknown): ValidationResult {
   const dur = Number(obj.durationMinutes);
   const acc = normalizeAccess(obj.access);
   errors.push(...acc.errors);
+  const exp = normalizeExpiry(obj.expiresAt);
+  if (exp.error) errors.push(exp.error);
 
   const list: unknown[] = Array.isArray(obj.questions) ? obj.questions : [];
   if (!list.length) errors.push("At least 1 question is required");
@@ -225,6 +243,7 @@ export function validateTest(raw: unknown): ValidationResult {
     title,
     description: cleanText(obj.description, LIM.desc),
     durationMinutes: Number.isFinite(dur) && dur > 0 ? Math.min(Math.round(dur), 1440) : null,
+    expiresAt: exp.value,
     imageSubmission: { enabled: imageEnabled },
     access: acc.access,
     questions,

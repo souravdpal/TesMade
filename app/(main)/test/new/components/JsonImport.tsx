@@ -1,6 +1,6 @@
 "use client";
 import { useState, type ChangeEvent } from "react";
-import { safeParse, validateTest, type TestData } from "./Schema";
+import { safeParse, validateTest, type TestData } from "@/interface/test_interface";
 import { errMsg } from "./Api";
 import { s } from "./Ui";
 import JsonDocs from "./Jsondocs";

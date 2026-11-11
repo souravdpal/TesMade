@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid"
 import cookiesdb from "../db/models/cookiesdb"
-import { connectDB } from "../db/mongodb"
+import { connectDB } from "@/lib/config/mongodb"
 import { cookies } from "next/headers"
 import { Types } from "mongoose"
 

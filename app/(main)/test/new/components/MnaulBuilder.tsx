@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { QUESTION_TYPES, TYPE_LABELS, emptyQuestion, uid, type DraftQuestion, type Option, type QuestionType } from "./Schema";
+import { QUESTION_TYPES, TYPE_LABELS, emptyQuestion, uid, type DraftQuestion, type Option, type QuestionType } from "@/interface/test_interface";
 import { AiField, s } from "./Ui";
 
 interface ManualBuilderProps {

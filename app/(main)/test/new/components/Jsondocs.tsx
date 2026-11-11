@@ -1,6 +1,6 @@
 "use client";
 import { useState, type CSSProperties } from "react";
-import { QUESTION_TYPES, TYPE_LABELS, type QuestionType } from "./Schema";
+import { QUESTION_TYPES, TYPE_LABELS, type QuestionType } from "@/interface/test_interface";
 import { s } from "./Ui";
 
 type DocTab = "quick" | "types" | "fields" | "extras";
@@ -8,7 +8,7 @@ const DOC_TABS: { id: DocTab; label: string }[] = [
   { id: "quick", label: "Quick start" },
   { id: "types", label: "Question types" },
   { id: "fields", label: "Field reference" },
-  { id: "extras", label: "Students & images" },
+  { id: "extras", label: "Students, expiry & images" },
 ];
 
 // ---------- Examples ----------
@@ -58,6 +58,7 @@ const FULL_EXAMPLE = `{
   "title": "Biology Quiz – Chapter 3",
   "description": "Cells and organelles",
   "durationMinutes": 30,
+  "expiresAt": null,
   "imageSubmission": { "enabled": false },
   "access": { "restricted": false, "usernames": [] },
   "questions": [
@@ -71,6 +72,10 @@ const ACCESS_EXAMPLE = `"access": {
   "restricted": true,
   "usernames": ["aisha_k", "ravi.s", "tom-w"]
 }`;
+
+const EXPIRY_EXAMPLE = `"expiresAt": "2026-12-31T23:59:00Z"   // UTC
+"expiresAt": "2026-12-31T23:59:00+05:30"   // with a time zone offset
+"expiresAt": null   // never expires`;
 
 const IMAGE_EXAMPLE = `{
   "title": "Art Class Test",
@@ -92,6 +97,7 @@ Allowed "type" values: ${QUESTION_TYPES.join(", ")}.
 - short_answer: acceptedAnswers ["..."]
 - long_answer: optional rubric
 Every question also has: text, optional points, optional explanation.
+Test-level "expiresAt" is optional: an ISO 8601 date-time in the future, or null for no expiry.
 
 Example:
 ${FULL_EXAMPLE}
@@ -117,7 +123,15 @@ export function buildTemplate(n: number, type: QuestionType): string {
     }
   });
   return JSON.stringify(
-    { title: "My test", description: "", durationMinutes: 30, imageSubmission: { enabled: false }, access: { restricted: false, usernames: [] }, questions },
+    {
+      title: "My test",
+      description: "",
+      durationMinutes: 30,
+      expiresAt: null,
+      imageSubmission: { enabled: false },
+      access: { restricted: false, usernames: [] },
+      questions,
+    },
     null,
     2
   );
@@ -267,7 +281,8 @@ export default function JsonDocs({ accent, onInsert }: JsonDocsProps) {
               ["title", "string", "yes", "Up to 200 characters."],
               ["description", "string", "no", "Up to 2000 characters."],
               ["durationMinutes", "number", "no", "1 to 1440. Leave out for no time limit."],
-              ["imageSubmission", "{ enabled: boolean }", "no", "Default off. See Students & images."],
+              ["expiresAt", "string (ISO date-time) | null", "no", "Must be in the future. Leave out or null for no expiry."],
+              ["imageSubmission", "{ enabled: boolean }", "no", "Default off. See Students, expiry & images."],
               ["access", "{ restricted, usernames }", "no", "Default: anyone with the link."],
               ["questions", "array", "yes", "1 to 200 questions."],
             ]}
@@ -313,6 +328,13 @@ export default function JsonDocs({ accent, onInsert }: JsonDocsProps) {
           <p style={{ margin: "6px 0" }}>
             If you also choose “Only specific students” in the access panel above the tabs, that list is used and the <code>access</code> in your
             JSON is ignored. If the panel is on “Anyone with the link”, the JSON’s <code>access</code> applies.
+          </p>
+
+          <strong>Set an expiry date</strong>
+          <CodeBlock code={EXPIRY_EXAMPLE} accent={accent} />
+          <p style={{ margin: "6px 0" }}>
+            <code>expiresAt</code> is the last moment students can take the test. Use an ISO 8601 date-time in the future. If you also pick a
+            date in the “Test expiry” panel above the tabs, the panel’s date is used and the JSON’s <code>expiresAt</code> is ignored.
           </p>
 
           <strong>Make students upload an image</strong>
